@@ -16,7 +16,8 @@ export interface ContestData {
 }
 
 export interface SelectProps {
-  lotteries: Lottery[];
+  value: string;
+  options: string[];
   label: string;
   labelPlaceHolder: string;
   onValueChange: (value: string) => void;

@@ -1,14 +1,15 @@
-import { useEffect, useState } from "react";
-import "./global.css";
-import Select from "./components/Select";
-import { Contest, ContestData, Lottery } from "./types";
-import Logo from "./assets/logo_sena.svg";
-import { SortedNumberList } from "./components/SortedNumberList";
-import { contestColors } from "./theme/colors";
-import { api } from "./utils/api";
+import { styled } from "@stitches/react";
 import { AxiosError } from "axios";
 import { format, parseISO } from "date-fns";
-import { styled } from "@stitches/react";
+import { useEffect, useState } from "react";
+import Logo from "./assets/logo_sena.svg";
+import Select from "./components/Select";
+import { SortedNumberList } from "./components/SortedNumberList";
+import { Spinner } from "./components/Spinner";
+import "./global.css";
+import { contestColors } from "./theme/colors";
+import { Contest, ContestData, Lottery } from "./types";
+import { api } from "./utils/api";
 
 function App() {
   const [lotteries, setLotteries] = useState<Lottery[]>([]);
@@ -17,11 +18,17 @@ function App() {
     {} as ContestData
   );
   const [selectedContest, setSelectedContest] = useState("");
-  const [selectedContestNumber, setSelectedContestNumber] = useState<number>();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleOnSelectValueChange = (selectedContest: string) => {
+    const contestNumber = getContestNumberByText(selectedContest);
+
+    const contestId =
+      contests.find((lottery) => lottery.loteriaId === contestNumber)
+        ?.concursoId ?? 0;
+
+    getContestById(contestId);
     setSelectedContest(selectedContest);
-    setSelectedContestNumber(getContestNumberByText(selectedContest));
   };
 
   const getContestNumberByText = (selectedContest: string) => {
@@ -78,34 +85,28 @@ function App() {
     getLotteries();
   }, []);
 
-  useEffect(() => {
-    if (!selectedContest) return;
-    const contestId = contests.find(
-      (lottery) => lottery.loteriaId === selectedContestNumber
-    )?.concursoId;
+  async function getContestById(contestId: number) {
+    try {
+      setIsLoading(true);
+      const { data } = await api.get<ContestData>(`/concursos/${contestId}`);
 
-    const getContestById = async () => {
-      try {
-        const { data } = await api.get<ContestData>(`/concursos/${contestId}`);
+      const formattedDate = format(parseISO(data.data), "dd/MM/yyyy");
 
-        const formattedDate = format(parseISO(data.data), "dd/MM/yyyy");
-
-        setContestData({ ...data, dataFormatada: formattedDate });
-      } catch (error) {
-        const axiosError = error as AxiosError;
-        if (axiosError.response) {
-          console.error({
-            data: axiosError.response.data,
-            status: axiosError.response.status,
-          });
-        } else {
-          console.log("Error", axiosError.message);
-        }
+      setContestData({ ...data, dataFormatada: formattedDate });
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      const axiosError = error as AxiosError;
+      if (axiosError.response) {
+        console.error({
+          data: axiosError.response.data,
+          status: axiosError.response.status,
+        });
+      } else {
+        console.log("Error", axiosError.message);
       }
-    };
-
-    getContestById();
-  }, [selectedContest]);
+    }
+  }
 
   const Wrapper = styled("div", {
     display: "flex",
@@ -134,7 +135,8 @@ function App() {
       paddingLeft: "0px",
     },
     "@media only screen and (max-width: 872px)": {
-      height: "100vh",
+      height: "45vh",
+      minWidth: "0px",
     },
   });
 
@@ -148,14 +150,16 @@ function App() {
     justifyContent: "space-around",
     "@media only screen and (max-width: 1023px)": {
       flexDirection: "column",
-      height: "70vh",
-      minHeight: "70vh",
+      height: "60vh",
+      minHeight: "60vh",
       minWidth: "869px",
       width: "100%",
     },
     "@media only screen and (max-width: 872px)": {
-      paddingTop: "50px",
-      height: "100vh",
+      height: "55vh",
+      minWidth: "0px",
+      minHeight: "50vh",
+      justifyContent: "flex-start",
     },
   });
 
@@ -169,23 +173,56 @@ function App() {
     },
   });
 
+  const LotteryContent = styled("div", {
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 20,
+    "@media only screen and (max-width: 872px)": {
+      flexDirection: "column",
+    },
+  });
+
+  const SortedNumberFooter = styled("div", {
+    marginTop: "3rem",
+    width: "80%",
+    textAlign: "center",
+    "@media only screen and (max-width: 1023px)": {
+      marginTop: 0,
+      position: "absolute",
+      bottom: "25px",
+    },
+    "@media only screen and (max-width: 872px)": {
+      marginTop: 0,
+      position: "absolute",
+      bottom: "25px",
+    },
+  });
+
+  const HiddenWrapper = styled("div", {
+    display: "hidden",
+    marginTop: "65px",
+    "@media only screen and (max-width: 1023px)": {
+      marginTop: "-175px",
+    },
+    "@media only screen and (max-width: 872px)": {
+      marginTop: "30px",
+    },
+  });
+
+  const shouldShowContestName = contestData && selectedContest && !isLoading;
+
   return (
     <Wrapper>
       <LotteryContainer>
         <Select
+          value={selectedContest}
           onValueChange={handleOnSelectValueChange}
-          lotteries={lotteries}
-          label="Concuros"
+          options={lotteries.map((lotteries) => lotteries.nome)}
+          label="Concursos"
           labelPlaceHolder="Selecione o concurso"
         />
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            flexDirection: "row",
-            gap: 20,
-          }}
-        >
+        <LotteryContent>
           <img width={"60px"} height={"56px"} src={Logo} alt="Logo Mega" />
           <p
             style={{
@@ -193,11 +230,12 @@ function App() {
               fontSize: "30px",
               color: "#ffffff",
               fontWeight: 700,
+              wordBreak: "break-word",
             }}
           >
             {selectedContest.toUpperCase()}
           </p>
-        </div>
+        </LotteryContent>
         <LotteryFooter>
           <p
             style={{
@@ -220,15 +258,19 @@ function App() {
               lineHeight: "17px",
             }}
           >
-            {selectedContest &&
+            {shouldShowContestName &&
               `${contestData.id} - ${contestData.dataFormatada}`}
           </p>
         </LotteryFooter>
       </LotteryContainer>
       <SortedNumbersContainer>
-        <div style={{ display: "hidden", marginTop: "40px" }} />
-        <SortedNumberList numbers={contestData?.numeros} />
-        <div style={{ marginTop: "3rem" }}>
+        <HiddenWrapper />
+        {isLoading ? (
+          <Spinner loading={isLoading} color={getBackgroundColor()} />
+        ) : (
+          <SortedNumberList numbers={contestData?.numeros} />
+        )}
+        <SortedNumberFooter>
           <p
             style={{
               fontFamily: "Montserrat",
@@ -241,7 +283,7 @@ function App() {
             Este sorteio é meramente ilustrativo e não possui nenhuma ligação
             com a CAIXA.
           </p>
-        </div>
+        </SortedNumberFooter>
       </SortedNumbersContainer>
     </Wrapper>
   );

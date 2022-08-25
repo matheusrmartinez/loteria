@@ -7,6 +7,7 @@ import {
 } from "@radix-ui/react-icons";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { SelectProps } from "../types";
+import { useState } from "react";
 
 const StyledTrigger = styled(SelectPrimitive.SelectTrigger, {
   all: "unset",
@@ -136,43 +137,54 @@ export const SelectSeparator = StyledSeparator;
 export const SelectScrollUpButton = StyledScrollUpButton;
 export const SelectScrollDownButton = StyledScrollDownButton;
 
-// Your app...
 const Box = styled("div", {});
 
 export const Select = ({
-  lotteries: options,
+  options,
   label,
   labelPlaceHolder,
   onValueChange,
-}: SelectProps) => (
-  <Box>
-    <SelectRadix onValueChange={onValueChange}>
-      <SelectTrigger aria-label={label}>
-        <SelectValue placeholder={labelPlaceHolder} />
-        <SelectIcon>
-          <ChevronDownIcon />
-        </SelectIcon>
-      </SelectTrigger>
-      <SelectContent>
-        <SelectScrollUpButton>
-          <ChevronUpIcon />
-        </SelectScrollUpButton>
-        <SelectViewport>
-          <SelectGroup>
-            <SelectLabel>{label}</SelectLabel>
-            {options?.map((option) => (
-              <SelectItem value={option.nome}>
-                <SelectItemText>{option.nome.toUpperCase()}</SelectItemText>
-                <SelectItemIndicator>
-                  <CheckIcon />
-                </SelectItemIndicator>
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectViewport>
-      </SelectContent>
-    </SelectRadix>
-  </Box>
-);
+  value,
+}: SelectProps) => {
+  const [selectedValue, setSelectedValue] = useState(value);
+
+  const handleOnValueChange = (value: string) => {
+    setSelectedValue(value);
+    onValueChange(value);
+  };
+
+  return (
+    <Box>
+      <SelectRadix value={selectedValue} onValueChange={handleOnValueChange}>
+        <SelectTrigger>
+          <SelectValue aria-label={selectedValue.toUpperCase()}>
+            {selectedValue.toUpperCase() || labelPlaceHolder}
+          </SelectValue>
+          <SelectIcon>
+            <ChevronDownIcon />
+          </SelectIcon>
+        </SelectTrigger>
+        <SelectContent>
+          <SelectScrollUpButton>
+            <ChevronUpIcon />
+          </SelectScrollUpButton>
+          <SelectViewport>
+            <SelectGroup>
+              <SelectLabel>{label}</SelectLabel>
+              {options?.map((option) => (
+                <SelectItem key={option} value={option}>
+                  <SelectItemText>{option.toUpperCase()}</SelectItemText>
+                  <SelectItemIndicator>
+                    <CheckIcon />
+                  </SelectItemIndicator>
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectViewport>
+        </SelectContent>
+      </SelectRadix>
+    </Box>
+  );
+};
 
 export default Select;

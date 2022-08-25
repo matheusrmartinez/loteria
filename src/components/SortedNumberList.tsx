@@ -17,14 +17,28 @@ const Wrapper = styled("div", {
   overflow: "scroll",
   gap: "5rem",
   padding: "15px 50px",
+  rowGap: "20px",
   "@media only screen and (max-width: 1244px)": {
-    gridTemplateColumns: "repeat(3, 35px)",
+    gridTemplateColumns: "repeat(4, 35px)",
+    maxHeight: "70%",
   },
   "@media only screen and (max-width: 1023px)": {
     gridTemplateColumns: "repeat(6, 35px)",
+    maxHeight: "70%",
   },
-  "@media only screen and (max-width: 839px)": {
-    gridTemplateColumns: "repeat(3, 35px)",
+  "@media only screen and (max-width: 872px)": {
+    gridTemplateColumns: "repeat(4, 30px)",
+    gap: "3.5rem",
+    padding: 0,
+    maxHeight: "50%",
+    rowGap: "20px",
+  },
+  "@media only screen and (max-width: 384px)": {
+    gridTemplateColumns: "repeat(4, 30px)",
+    gap: "3.5rem",
+    padding: 0,
+    maxHeight: "45%",
+    rowGap: "20px",
   },
 });
 
