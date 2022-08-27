@@ -10,6 +10,7 @@ Pick up your lottery and check if you are the winner 🤑🤑🤑
 
 ## Mobo version
 <img src=public/facil-mobo.png>
+<img src=public/loto-mobo.png>
 
 
 <h3 align="left">
