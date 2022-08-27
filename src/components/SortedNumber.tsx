@@ -29,7 +29,7 @@ export const Wrapper = styled("style", {
 
 export const StyledParagraph = styled("div", {
   fontSize: "27px",
-  fontFamily: "Montserrat",
+  fontFamily: "Roboto",
   "@media only screen and (max-width: 872px)": {
     fontSize: "20px",
   },

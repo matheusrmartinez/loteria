@@ -25,12 +25,13 @@ const Wrapper = styled("div", {
   "@media only screen and (max-width: 1023px)": {
     gridTemplateColumns: "repeat(6, 35px)",
     maxHeight: "70%",
+    padding: 0,
   },
   "@media only screen and (max-width: 872px)": {
     gridTemplateColumns: "repeat(4, 30px)",
     gap: "3.5rem",
-    padding: 0,
-    maxHeight: "50%",
+    padding: "15px 50px",
+    maxHeight: "60%",
     rowGap: "20px",
   },
   "@media only screen and (max-width: 384px)": {

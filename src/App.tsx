@@ -226,7 +226,7 @@ function App() {
           <img width={"60px"} height={"56px"} src={Logo} alt="Logo Mega" />
           <p
             style={{
-              fontFamily: "Montserrat",
+              fontFamily: "Roboto",
               fontSize: "30px",
               color: "#ffffff",
               fontWeight: 700,
@@ -239,7 +239,7 @@ function App() {
         <LotteryFooter>
           <p
             style={{
-              fontFamily: "Montserrat",
+              fontFamily: "Roboto",
               fontSize: "14px",
               color: "#ffffff",
               fontWeight: 500,
@@ -251,7 +251,7 @@ function App() {
           </p>
           <p
             style={{
-              fontFamily: "Montserrat",
+              fontFamily: "Roboto",
               fontSize: "20px",
               color: "#ffffff",
               fontWeight: 700,
@@ -273,7 +273,7 @@ function App() {
         <SortedNumberFooter>
           <p
             style={{
-              fontFamily: "Montserrat",
+              fontFamily: "Roboto",
               fontSize: "16px",
               fontWeight: 400,
               wordBreak: "break-word",

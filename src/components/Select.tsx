@@ -14,7 +14,7 @@ const StyledTrigger = styled(SelectPrimitive.SelectTrigger, {
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  fontFamily: "Montserrat, sans-serif",
+  fontFamily: "Roboto, sans-serif",
   borderRadius: 6,
   padding: "0px 23px",
   fontSize: 15,
@@ -58,7 +58,7 @@ const StyledItem = styled(SelectPrimitive.Item, {
   fontSize: 15,
   lineHeight: 1,
   color: "#333333",
-  fontFamily: "Montserrat, sans-serif",
+  fontFamily: "Roboto, sans-serif",
   borderRadius: 3,
   display: "flex",
   alignItems: "center",
@@ -82,7 +82,7 @@ const StyledLabel = styled(SelectPrimitive.Label, {
   padding: "0 25px",
   fontSize: 15,
   lineHeight: "25px",
-  fontFamily: "Montserrat, sans-serif",
+  fontFamily: "Roboto, sans-serif",
   color: mauve.mauve11,
 });
 
